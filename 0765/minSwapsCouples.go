@@ -9,6 +9,36 @@ func minSwapsCouples(row []int) int {
 	return n/2 - uf.count
 }
 
+func minSwapCouplesDFS(row []int) int{
+	n := len(row)
+	edges := make([][]int, n)
+	for i := 0; i < n; i += 2 {
+		l, r := row[i]/2, row[i+1]/2
+		if l != r {
+			edges[l] = append(edges[l], r)
+			edges[r] = append(edges[r], l)
+		}
+	}
+	visited := make([]bool, n)
+	var count int
+	var dfs func(v int)
+	dfs = func(v int) {
+		if !visited[v] {
+			visited[v] = true
+			for _, u := range edges[v] {
+				dfs(u)
+			}
+		}
+	}
+	for u := 0; u < n/2; u++ {
+		if !visited[u] {
+			dfs(u)
+			count++
+		}
+	}
+	return n/2 - count
+}
+
 func minSwapCouplesBFS(row []int) int {
 	n := len(row)
 	edges := make([][]int, n/2)
